@@ -55,15 +55,15 @@ Use the higher-order function getWinners to do the following:
 4. Returns the names of all winning countries in an array called `winners` */ 
 
 function getWinners(data, fincb) {
-    let winners = []
-    let winCheck = (game) => {
+    
+    let winners = fincb(data).map(function(game) {
         if(game["Home Team Goals"] > game["Away Team Goals"]){
-            winners.push(game["Home Team Name"])
+            return game["Home Team Name"]
         } else {
-            winners.push(game["Away Team Name"])
+            return game["Away Team Name"]
         }
-    }
-    fincb(data).filter(winCheck)
+    })
+    
     return winners
     /* code here */
 }
@@ -77,19 +77,30 @@ Use the higher-order function getWinnersByYear to do the following:
 3. Receive a callback function getYears from task 3
 4. Receive a callback function getWinners from task 4
 5. Return an array of strings that say "In {year}, {country} won the world cup!" 
-
-hint: the strings returned need to exactly match the string in step 4.
+`In ${yearcb(data, fincb)[i]}, ${wincb(data, fincb)[i]} won the world cup!`
+hint: the strings returned need to exactly  match the string in step 4.
  */
-
 function getWinnersByYear(data, fincb, yearcb, wincb) {
     let strings = []
-    for(let i = 0; i<19; i++){
-        strings.push(`In ${yearcb(data, fincb)[i]}, ${wincb(data, fincb)[i]} won the world cup!`)
-    }
-    return strings
+    let year = yearcb(data, fincb)
+    let state = wincb(data, fincb)
+    console.log(state)
+    fincb(data).forEach(function(game, index){
+      strings.push(`In ${year[index]}, ${state[index]} won the world cup!`)
+  })
+  return strings
 }
+// function getWinnersByYear(data, fincb, yearcb, wincb) {
+//     let strings = []
+//     let year = yearcb(data, fincb)
+//     let state = wincb(data, fincb)
+//     for(let i = 0; i<19; i++){
+//         let string = `In ${year[i]}, ${state[i]} won the world cup!`
+//         strings.push(string)
+//     }
+//     return strings
+// }
 console.log(getWinnersByYear(fifaData, getFinals, getYears, getWinners))
-
 
 /* 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀 Task 6: 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
 Use the higher order function getAverageGoals to do the following: 
@@ -101,10 +112,14 @@ Use the higher order function getAverageGoals to do the following:
  Example of invocation: getAverageGoals(getFinals(fifaData));
 */
 
-function getAverageGoals(/* code here */) {
+function getAverageGoals(fincb) {
+    let avg = fincb.reduce(function(acc, item){
+        return (acc + item['Home Team Goals'] + item['Away Team Goals'])
+    }, 0)
+    return (avg/fincb.length).toFixed(2)
    /* code here */
 }
-
+console.log(getAverageGoals(getFinals(fifaData)))
 
 
 
